@@ -7,17 +7,20 @@ RUN chmod +x /usr/bin/fwatchdog
 
 RUN addgroup -S app && adduser app -S -G app
 
-RUN mkdir -p /home/app
+RUN mkdir -p /home/app/build/lib
 
-WORKDIR /home/app
+WORKDIR /home/app/build
 
-COPY --chown=app:app cli/mix.exs ./
-COPY --chown=app:app cli/lib/*.ex ./lib/
+COPY --chown=app:app mix.exs .
+COPY --chown=app:app cli.ex ./lib/
+COPY --chown=app:app function/handler.ex ./lib/
 
 RUN MIX_ENV=prod mix escript.build
 
+RUN mv elixir_function /home/app
 RUN chown app:app -R /home/app/elixir_function
 
+WORKDIR /home/app/
 USER app
 
 ENV fprocess="./elixir_function"
