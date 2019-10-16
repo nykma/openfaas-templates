@@ -1,0 +1,4 @@
+language: elixir
+fprocess: ./elixir_function
+welcome_message: |
+  You have created a new function which uses Elixir 1.9
