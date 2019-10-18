@@ -15,7 +15,7 @@ faas-cli new --lang elixir hello-elixir
 ## Elixir for new http `of-watchdog` using Plug
 ### Downloading the template
 ```
-faas-cli new --lang elixir-hhtp-plug hello-elixir-http
+faas-cli new --lang elixir-http-plug hello-elixir-http
 ```
 ### Using the template
 ``` sh
