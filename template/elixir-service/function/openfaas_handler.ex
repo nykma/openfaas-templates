@@ -1,4 +1,4 @@
-defmodule WebServer.OpenFaas.Endpoint do
+defmodule OpenFaasHandler do
   use Plug.Router
 
   plug(Plug.Logger)

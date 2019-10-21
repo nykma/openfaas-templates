@@ -1,9 +1,9 @@
-defmodule WebServer.MixProject do
+defmodule OpenFaasService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :web_server,
+      app: :openfaas_service,
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
@@ -14,7 +14,7 @@ defmodule WebServer.MixProject do
   def application do
     [
       extra_applications: [:logger, :plug_cowboy],
-      mod: {WebServer.Application, []}
+      mod: {OpenFaasService, []}
     ]
   end
 

@@ -1,16 +1,16 @@
-defmodule WebServer.Application do
+defmodule OpenFaasService do
   use Application
 
   def start(_type, _args) do
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
-        plug: WebServer.OpenFaas.Endpoint,
-        options: [port: Application.get_env(:web_server, :port) |> get_port()]
+        plug: OpenFaasHandler,
+        options: [port: Application.get_env(:openfaas_service, :port) |> get_port()]
       )
     ]
 
-    opts = [strategy: :one_for_one, name: WebServer.OpenFaas.Supervisor]
+    opts = [strategy: :one_for_one, name: OpenFaasSupervisor]
     Supervisor.start_link(children, opts)
   end
 

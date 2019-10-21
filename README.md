@@ -1,11 +1,12 @@
 # openfaas-templates
 Templates for use in OpenFaaS platform
 
-## Elixir for Classic Watchdog
-### Downloading the template
+### Downloading the templates
 ```sh
 faas-cli template pull https://github.com/arboricity/openfaas-templates/
 ```
+
+## Elixir for Classic Watchdog
 
 ### Using the template
 ``` sh
@@ -13,11 +14,7 @@ faas-cli new --lang elixir hello-elixir
 ```
 
 ## Elixir for new http `of-watchdog` using Plug
-### Downloading the template
-```
-faas-cli new --lang elixir-http-plug hello-elixir-http
-```
 ### Using the template
 ``` sh
-faas-cli new --lang elixir-http-plug hello-elixir-http
+faas-cli new --lang elixir-service hello-elixir-service
 ```

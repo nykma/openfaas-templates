@@ -1,4 +1,0 @@
-language: elixir-http-plug
-fprocess: ./bin/web_server start
-welcome_message: |
-  You have created a new function which uses Elixir 1.9 and Cowboy/Plug for the http server.

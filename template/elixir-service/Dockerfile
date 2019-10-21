@@ -32,13 +32,13 @@ RUN addgroup -S app && adduser -S -g app app \
 
 WORKDIR /home/app
 
-COPY --from=builder /elixir/src/_build/prod/rel/web_server/ .
+COPY --from=builder /elixir/src/_build/prod/rel/openfaas_service/ .
 COPY --from=builder /usr/bin/fwatchdog .
 
 RUN chown -R app /home/app
 
 USER app
-ENV fprocess="./bin/web_server start"
+ENV fprocess="./bin/openfaas_service start"
 ENV mode="http"
 ENV upstream_url="http://127.0.0.1:4001"
 
