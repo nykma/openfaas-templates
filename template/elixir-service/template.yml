@@ -1,4 +1,4 @@
 language: elixir-service
-fprocess: ./web_server
+fprocess: ./bin/openfaas_service start
 welcome_message: |
   You have created a new function which uses Elixir 1.9 and Cowboy/Plug for the http server.
