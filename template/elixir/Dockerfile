@@ -1,13 +1,15 @@
-FROM openfaas/of-watchdog:0.7.2 as watchdog
+FROM openfaas/of-watchdog:0.7.7 as watchdog
 
 FROM elixir:1.10-alpine as builder
 
 ENV MIX_ENV=prod
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
-RUN chmod +x /usr/bin/fwatchdog
 
-RUN mkdir -p /elixir/src/lib
+RUN chmod +x /usr/bin/fwatchdog && \
+    mkdir -p /elixir/src/lib && \
+    mix local.hex --force && \
+    mix local.rebar --force
 
 WORKDIR /elixir/src/
 
@@ -17,25 +19,20 @@ COPY rel .
 COPY *.ex ./lib/
 COPY function/*.ex ./lib/
 
-RUN mix local.hex --force && \
-    mix local.rebar --force
-
-RUN mix deps.get
-RUN mix deps.compile
-RUN mix release
+RUN mix deps.get && \
+    mix deps.compile && \
+    mix release
 
 FROM elixir:1.10-alpine
-
-RUN addgroup -S app && adduser -S -g app app \
-    && mkdir -p /home/app \
-    && chown app /home/app
 
 WORKDIR /home/app
 
 COPY --from=builder /elixir/src/_build/prod/rel/openfaas_service/ .
 COPY --from=builder /usr/bin/fwatchdog .
 
-RUN chown -R app /home/app
+RUN addgroup -S app && adduser -S -g app app \
+    && mkdir -p /home/app \
+    && chown -R app /home/app
 
 USER app
 ENV fprocess="./bin/openfaas_service start"
