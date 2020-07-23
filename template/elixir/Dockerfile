@@ -17,11 +17,12 @@ COPY mix.* ./
 COPY config .
 COPY rel .
 COPY *.ex ./lib/
+RUN mix deps.get && \
+    mix deps.compile
+
 COPY function/*.ex ./lib/
 
-RUN mix deps.get && \
-    mix deps.compile && \
-    mix release
+RUN mix release
 
 FROM elixir:1.10-alpine
 
