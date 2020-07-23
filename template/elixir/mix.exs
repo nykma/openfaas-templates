@@ -1,19 +1,27 @@
-defmodule Cli.MixProject do
+defmodule OpenFaasService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :cli,
+      app: :openfaas_service,
       version: "0.1.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      escript: [main_module: Cli, name: :elixir_function]
+      deps: deps()
     ]
   end
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :plug_cowboy],
+      mod: {OpenFaasService, []}
+    ]
+  end
+
+  defp deps do
+    [
+      {:plug_cowboy, "~> 2.3"},
+      {:poison, "~> 4.0"},
     ]
   end
 end

@@ -1,2 +1,0 @@
-language: julia
-fprocess: julia index.jl

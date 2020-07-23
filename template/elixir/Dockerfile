@@ -1,36 +1,45 @@
-FROM openfaas/classic-watchdog:0.18.0 as watchdog
+FROM openfaas/of-watchdog:0.7.2 as watchdog
 
-FROM elixir:1.9-alpine
+FROM elixir:1.10-alpine as builder
+
+ENV MIX_ENV=prod
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
 
-RUN addgroup -S app && adduser app -S -G app
+RUN mkdir -p /elixir/src/lib
 
-RUN mkdir -p /home/app/build/lib
+WORKDIR /elixir/src/
 
-WORKDIR /home/app/build
+COPY mix.* ./
+COPY config .
+COPY rel .
+COPY *.ex ./lib/
+COPY function/*.ex ./lib/
 
-COPY --chown=app:app mix.exs .
-COPY --chown=app:app cli.ex ./lib/
-COPY --chown=app:app function/handler.ex ./lib/
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-RUN MIX_ENV=prod mix escript.build
+RUN mix deps.get
+RUN mix deps.compile
+RUN mix release
 
-RUN mv elixir_function /home/app
-RUN chown app:app -R /home/app/elixir_function
+FROM elixir:1.10-alpine
 
-WORKDIR /home/app/
+RUN addgroup -S app && adduser -S -g app app \
+    && mkdir -p /home/app \
+    && chown app /home/app
+
+WORKDIR /home/app
+
+COPY --from=builder /elixir/src/_build/prod/rel/openfaas_service/ .
+COPY --from=builder /usr/bin/fwatchdog .
+
+RUN chown -R app /home/app
+
 USER app
+ENV fprocess="./bin/openfaas_service start"
+ENV mode="http"
+ENV upstream_url="http://127.0.0.1:4001"
 
-ENV fprocess="./elixir_function"
-
-EXPOSE 8080
-
-CMD ["fwatchdog"]
-
-
-
-
-
-
+CMD ["./fwatchdog"]
